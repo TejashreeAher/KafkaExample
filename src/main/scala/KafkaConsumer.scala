@@ -24,19 +24,22 @@ object KafkaConsumer {
       config
     }
 
-    def run(numThreads: Int) = {
-      val topicCountMap = Map("test" -> numThreads)
+    def run() = {
+      val topicCountMap = Map("test" -> 1)
       val consumerMap = consumer.createMessageStreams(topicCountMap);
       val streams = consumerMap.get("test").get;
       val it = streams.iterator
-      while (it.hasNext) {
-        val msg = new String(it.next().toString());
-        System.out.println("RECEIVED at:  " + System.currentTimeMillis() + ", message: " + msg);
+      while(it.hasNext) {
+        val str = it.next().iterator();
+        while(str.hasNext()){
+          val msg = new String(str.next().message());
+          System.out.println("RECEIVED at:  " + System.currentTimeMillis() + ", message: " + msg);
+        }
       }
       println("KIlling thread")
     }
   }
   def main(args: Array[String]):Unit={
-    new KafkaConsumerObject().run(10)
+    new KafkaConsumerObject().run()
   }
 }
